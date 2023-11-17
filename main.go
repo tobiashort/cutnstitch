@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -27,12 +28,24 @@ func usage() {
 
 func main() {
   flag.Parse()
+
   if flag.NArg() != 2 {
     usage()
   }
   
   delimiter := flag.Arg(0)
   format := must2(template.New("").Parse(flag.Arg(1)))
-  input := strings.Split(string(must2(io.ReadAll(os.Stdin))), delimiter)
-  must(format.Execute(os.Stdout, input))
+  reader := bufio.NewReader(os.Stdin)
+
+  for {
+    line, err := reader.ReadString('\n')
+    if err != nil && err != io.EOF {
+        panic(err)
+    }
+    cut := strings.Split(line, delimiter)
+    must(format.Execute(os.Stdout, cut))
+    if err == io.EOF {
+      break
+    }
+  }
 }
