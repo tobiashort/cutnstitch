@@ -34,18 +34,12 @@ func main() {
   }
   
   delimiter := flag.Arg(0)
-  format := must2(template.New("").Parse(flag.Arg(1)))
-  reader := bufio.NewReader(os.Stdin)
+  format := must2(template.New("").Parse(fmt.Sprintf("%s\n", flag.Arg(1))))
+  scanner := bufio.NewScanner(os.Stdin)
 
-  for {
-    line, err := reader.ReadString('\n')
-    if err != nil && err != io.EOF {
-        panic(err)
-    }
+  for scanner.Scan() {
+    line := scanner.Text()
     cut := strings.Split(line, delimiter)
     must(format.Execute(os.Stdout, cut))
-    if err == io.EOF {
-      break
-    }
   }
 }
