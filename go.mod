@@ -1,3 +1,3 @@
-module github.com/t-hg/cutnstitch
+module github.com/tobiashort/cutnstitch
 
 go 1.21.3
